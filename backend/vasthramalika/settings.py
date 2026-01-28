@@ -106,9 +106,19 @@ if os.environ.get('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.config(
             conn_max_age=600,
-            ssl_require=True if not DEBUG else False
+            ssl_require=True
         )
     }
+    
+    # Production Security Settings
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 else:
     # Default to a local PostgreSQL if available via env, otherwise fallback to SQLite for safety
     LOCAL_DB_URL = os.environ.get('LOCAL_DATABASE_URL', 'sqlite:///' + str(BASE_DIR / 'db.sqlite3'))
@@ -118,6 +128,7 @@ else:
             conn_max_age=600
         )
     }
+
 
 
 # Password validation
