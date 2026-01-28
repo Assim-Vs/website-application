@@ -1,3 +1,4 @@
+import rest_framework
 from rest_framework import status, views, permissions
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token

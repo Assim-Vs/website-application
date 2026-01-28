@@ -1,0 +1,38 @@
+databases:
+  - name: vasthramalika-db
+    databaseName: vasthramalika
+    user: vasthramalika_user
+
+services:
+  - type: web
+    name: vasthramalika-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn vasthramalika.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vasthramalika-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    plan: free
+
+  - type: web
+    name: vasthramalika-frontend
+    runtime: node
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    startCommand: "npm run preview"
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: vasthramalika-backend
+          property: url
+    plan: free
